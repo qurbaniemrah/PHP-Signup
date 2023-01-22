@@ -1,16 +1,41 @@
 <?php
+$success=0;
+$user=0;
+
+
+
 if($_SERVER['REQUEST_METHOD']=='POST') {
     include 'connect.php';
     $username=$_POST['username'];
     $password=$_POST['password'];
 
-    $sql="insert into `registration`(username,password) values('$username','$password')";
+    // $sql="insert into `registration`(username,password) values('$username','$password')";
+    // $result=mysqli_query($con,$sql);
+
+    // if($result){
+    //     echo "Data inserted successfully";
+    // }else {
+    //     die(mysqli_error($con));
+    // }
+    $sql="select * from `registration` where username='$username'";
     $result=mysqli_query($con,$sql);
 
-    if($result){
-        echo "Data inserted successfully";
+    if($result) {
+      $num=mysqli_num_rows($result);
+      if($num>0) {
+        // echo "User alredy exist";
+        $user=1;
+
+      }else {
+        $sql="insert into `registration`(username,password) values('$username','$password')";
+        $result=mysqli_query($con,$sql);
+          if($result){
+        // echo "Signup successfull";
+        $success=1;
     }else {
         die(mysqli_error($con));
+    }
+      }
     }
 }
 
@@ -38,6 +63,31 @@ if($_SERVER['REQUEST_METHOD']=='POST') {
     <title>Signup page</title>
   </head>
   <body>
+<?php
+if($user) {
+  echo '<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Oh no sorry</strong>User alredy exist.
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>';
+}
+
+if($success) {
+  echo '<div class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>Success</strong>You are successufly signup.
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>';
+}
+
+
+?>
+
+
+
+
     <h1 class="text-center">Signup Page</h1>
 <div class="container mt-5">
 <form action="sign.php" method="post">
